@@ -7,21 +7,28 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity implements UiThreadCallback {
     private CustomHandlerThread mHandlerThread;
     private UiHandler mUiHandler;
+    private TextView mDisplayTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mDisplayTextView = (TextView)findViewById(R.id.display);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         // handler for UI thread to receive message from worker thread
-        mUiHandler = new UiHandler(Looper.getMainLooper(),this);
+        mUiHandler = new UiHandler(Looper.getMainLooper(), this, mDisplayTextView);
 
         // create and start a new worker thread
         mHandlerThread = new CustomHandlerThread("HandlerThread");
@@ -30,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         // clear the message queue of worker thread and stop the current task
         if(mHandlerThread != null){
             mHandlerThread.quit();
@@ -51,6 +58,25 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
         mHandlerThread.addMessage(2);
     }
 
+    public void send3tasksToThreadPool(View view) {
+    }
+
+    public void send4TasksToThreadPool(View view) {
+    }
+
+    public void scheduleTasksIn5Sec(View view) {
+    }
+
+    public void scheduleTaskEverySec(View view) {
+    }
+
+    public void stopAllThreadsInPool(View view) {
+    }
+
+    public void clearDisplay(View view) {
+        mDisplayTextView.setText("");
+    }
+
     // receive message from worker thread
     @Override
     public void publishToUiThread(int message) {
@@ -64,10 +90,12 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
     // reference to activity context. This is to avoid memory leak.
     private static class UiHandler extends Handler {
         private WeakReference<Context> mWeakRefContext;
+        private WeakReference<TextView> mWeakRefDisplay;
 
-        public UiHandler(Looper looper, Context context) {
+        public UiHandler(Looper looper, Context context, TextView display) {
             super(looper);
             this.mWeakRefContext = new WeakReference<Context>(context);
+            this.mWeakRefDisplay = new WeakReference<TextView>(display);
         }
 
         // This method will run on UI thread
@@ -76,12 +104,12 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
             super.handleMessage(msg);
             switch (msg.what){
                 case 1:
-                    if(mWeakRefContext != null && mWeakRefContext.get() != null)
-                        Toast.makeText(mWeakRefContext.get(),"Message 1 has been processed",Toast.LENGTH_SHORT).show();
+                    if(mWeakRefDisplay != null && mWeakRefDisplay.get() != null)
+                        mWeakRefDisplay.get().append(Util.getReadableTime()+"\tMessage1 processed on HandlerThread\n");
                     break;
                 case 2:
-                    if(mWeakRefContext != null && mWeakRefContext.get() != null)
-                        Toast.makeText(mWeakRefContext.get(),"Message 2 has been processed",Toast.LENGTH_SHORT).show();
+                    if(mWeakRefDisplay != null && mWeakRefDisplay.get() != null)
+                        mWeakRefDisplay.get().append(Util.getReadableTime()+"\tMessage2 processed on HandlerThread\n");
                     break;
                 default:
                     break;

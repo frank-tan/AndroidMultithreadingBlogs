@@ -3,6 +3,7 @@ package com.franktan.multithreadingblogs;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,8 +21,7 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
         setContentView(R.layout.activity_main);
 
         // handler for UI thread to receive message from worker thread
-        mUiHandler = new UiHandler();
-        mUiHandler.setContext(this);
+        mUiHandler = new UiHandler(Looper.getMainLooper(),this);
 
         // create and start a new worker thread
         mHandlerThread = new CustomHandlerThread("HandlerThread");
@@ -65,21 +65,22 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
     private static class UiHandler extends Handler {
         private WeakReference<Context> mWeakRefContext;
 
-        public void setContext(Context context){
-            mWeakRefContext = new WeakReference<Context>(context);
+        public UiHandler(Looper looper, Context context) {
+            super(looper);
+            this.mWeakRefContext = new WeakReference<Context>(context);
         }
 
-        // simply show a toast message
+        // This method will run on UI thread
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
                 case 1:
-                    if(mWeakRefContext != null)
+                    if(mWeakRefContext != null && mWeakRefContext.get() != null)
                         Toast.makeText(mWeakRefContext.get(),"Message 1 has been processed",Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
-                    if(mWeakRefContext != null)
+                    if(mWeakRefContext != null && mWeakRefContext.get() != null)
                         Toast.makeText(mWeakRefContext.get(),"Message 2 has been processed",Toast.LENGTH_SHORT).show();
                     break;
                 default:

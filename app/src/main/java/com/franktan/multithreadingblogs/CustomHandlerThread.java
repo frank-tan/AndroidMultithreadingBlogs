@@ -17,7 +17,7 @@ public class CustomHandlerThread extends HandlerThread {
     private WeakReference<UiThreadCallback> mUiThreadCallback;
 
     public CustomHandlerThread(String name){
-        super(name);
+        super(name, android.os.Process.THREAD_PRIORITY_BACKGROUND);
     }
 
     // Get a reference to worker thread's handler after looper is prepared
@@ -53,7 +53,7 @@ public class CustomHandlerThread extends HandlerThread {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e){}
-                    if(mUiThreadCallback != null){
+                    if(mUiThreadCallback != null && mUiThreadCallback.get() != null){
                         mUiThreadCallback.get().publishToUiThread(1);
                     }
                     break;
@@ -61,7 +61,7 @@ public class CustomHandlerThread extends HandlerThread {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e){}
-                    if(mUiThreadCallback != null){
+                    if(mUiThreadCallback != null && mUiThreadCallback.get() != null){
                         mUiThreadCallback.get().publishToUiThread(2);
                     }
                     break;

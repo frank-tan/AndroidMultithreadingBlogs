@@ -19,14 +19,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/send_msg_1"
             android:text="@string/msg_1_handler_thread"
-            android:onClick="sendMsg1Clicked"/>
+            android:onClick="sendMsg1ToHandlerThread"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/send_msg_2"
             android:text="@string/msg_2_handler_thread"
-            android:onClick="sendMsg2Clicked"/>
+            android:onClick="sendMsg2ToHandlerThread"/>
 
         <Button
             android:layout_width="match_parent"
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/send_msg_7"
             android:text="@string/msg_7_thread_pool"
-            android:onClick="stopAllThreadsInPool"/>
+            android:onClick="clearQueueOfThreadPool"/>
 
         <Button
             android:layout_width="wrap_content"

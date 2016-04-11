@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MultithreadingBlogs</string>
+    <string name="app_name">Multithreading Series</string>
     <string name="msg_1_handler_thread">Send Message 1 to a HandlerThread</string>
     <string name="msg_2_handler_thread">Send Message 2 to a HandlerThread</string>
     <string name="msg_3_thread_pool">Send 3 tasks to a pool of 3 worker threads</string>

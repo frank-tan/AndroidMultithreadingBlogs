@@ -45,20 +45,6 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/send_msg_5"
-            android:text="@string/msg_5_thread_pool"
-            android:onClick="scheduleTasksIn5Sec"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/send_msg_6"
-            android:text="@string/msg_6_thread_pool"
-            android:onClick="scheduleTaskEverySec"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/send_msg_7"
             android:text="@string/msg_7_thread_pool"
             android:onClick="clearQueueOfThreadPool"/>

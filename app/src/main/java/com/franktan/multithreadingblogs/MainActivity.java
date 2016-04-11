@@ -89,12 +89,6 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
         }
     }
 
-    public void scheduleTasksIn5Sec(View view) {
-    }
-
-    public void scheduleTaskEverySec(View view) {
-    }
-
     public void clearQueueOfThreadPool(View view) {
         mCustomThreadPoolManager.clearQueue();
     }

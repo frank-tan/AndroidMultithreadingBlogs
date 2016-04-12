@@ -19,35 +19,35 @@
             android:layout_height="wrap_content"
             android:id="@+id/send_msg_1"
             android:text="@string/msg_1_handler_thread"
-            android:onClick="sendMsg1ToHandlerThread"/>
+            android:onClick="sendRunnableToHandlerThread"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/send_msg_2"
             android:text="@string/msg_2_handler_thread"
-            android:onClick="sendMsg2ToHandlerThread"/>
+            android:onClick="sendMessageToHandlerThread"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/send_msg_3"
             android:text="@string/msg_3_thread_pool"
-            android:onClick="send3tasksToThreadPool"/>
+            android:onClick="send4tasksToThreadPool"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/send_msg_4"
             android:text="@string/msg_4_thread_pool"
-            android:onClick="send4TasksToThreadPool"/>
+            android:onClick="send8TasksToThreadPool"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/send_msg_7"
             android:text="@string/msg_7_thread_pool"
-            android:onClick="cancelAllThreadPoolTasks"/>
+            android:onClick="cancelAllTasksInThreadPool"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -60,6 +60,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/display" />
+            android:id="@+id/display"
+            android:freezesText="true"/>
     </LinearLayout>
 </ScrollView>

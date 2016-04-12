@@ -1,11 +1,9 @@
 <resources>
     <string name="app_name">Multithreading Series</string>
-    <string name="msg_1_handler_thread">Send Message 1 to a HandlerThread</string>
-    <string name="msg_2_handler_thread">Send Message 2 to a HandlerThread</string>
-    <string name="msg_3_thread_pool">Send 3 tasks to a pool of 3 worker threads</string>
-    <string name="msg_4_thread_pool">Send 4 tasks to a pool of 3 worker threads</string>
+    <string name="msg_1_handler_thread">Send a Runnable to a HandlerThread</string>
+    <string name="msg_2_handler_thread">Send a Message to a HandlerThread</string>
+    <string name="msg_3_thread_pool">Send 4 tasks to Thread Pool</string>
+    <string name="msg_4_thread_pool">Send 8 tasks to Thread Pool</string>
     <string name="clearDisplay">Clear Messages</string>
-    <string name="msg_5_thread_pool">Schedule 3 tasks to thread pool in 5 sec</string>
-    <string name="msg_6_thread_pool">Schedule a task for thread pool to run every sec</string>
     <string name="msg_7_thread_pool">Stop all threads in thread pool</string>
 </resources>

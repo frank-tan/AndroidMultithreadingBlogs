@@ -6,7 +6,6 @@ import android.util.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -18,12 +17,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by tan on 11/04/2016.
+ * Created by Frank Tan on 11/04/2016.
+ * A Singleton Manager for managing the thread pool
  */
 public class CustomThreadPoolManager {
 
     private static CustomThreadPoolManager sInstance = null;
-    private static final int THREAD_POOL_SIZE = 3;
+    private static final int DEFAULT_THREAD_POOL_SIZE = 4;
     private static int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
     private static final int KEEP_ALIVE_TIME = 1;
     private static final TimeUnit KEEP_ALIVE_TIME_UNIT;
@@ -47,19 +47,21 @@ public class CustomThreadPoolManager {
 
         mRunningTaskList = new ArrayList<>();
 
+        Log.e(Util.LOG_TAG,"Available cores: " + NUMBER_OF_CORES);
+
         /*
-            TODO: You can choose between a fixed sized thread pool and a dynamic pool
+            TODO: You can choose between a fixed sized thread pool and a dynamic sized pool
             TODO: Comment one and uncomment another to see the difference.
          */
-        //mExecutorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE, new BackgroundThreadFactory());
-        mExecutorService = new ThreadPoolExecutor(NUMBER_OF_CORES, NUMBER_OF_CORES, KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, mTaskQueue, new BackgroundThreadFactory());
+        //mExecutorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE, new BackgroundThreadFactory());
+        mExecutorService = new ThreadPoolExecutor(NUMBER_OF_CORES, NUMBER_OF_CORES*2, KEEP_ALIVE_TIME, KEEP_ALIVE_TIME_UNIT, mTaskQueue, new BackgroundThreadFactory());
     }
 
     public static CustomThreadPoolManager getsInstance() {
         return sInstance;
     }
 
-    // Add a callable to the queue, which will be executed by available thread in the pool
+    // Add a callable to the queue, which will be executed by the next available thread in the pool
     public void addCallable(Callable callable){
         Future future = mExecutorService.submit(callable);
         mRunningTaskList.add(future);
@@ -78,7 +80,7 @@ public class CustomThreadPoolManager {
             }
             mRunningTaskList.clear();
         }
-        sendMessageToUiThread(Util.createMessage(1, "All tasks in the thread pool are cancelled"));
+        sendMessageToUiThread(Util.createMessage(Util.MESSAGE_ID, "All tasks in the thread pool are cancelled"));
     }
 
     // Keep a weak reference to the UI thread, so we can send messages to the UI thread
@@ -87,7 +89,7 @@ public class CustomThreadPoolManager {
     }
 
     // Pass the message to the UI thread
-    public void passMessageToUiThread(Message message){
+    public void sendMessageToUiThread(Message message){
         if(uiThreadCallbackWeakReference != null && uiThreadCallbackWeakReference.get() != null) {
             uiThreadCallbackWeakReference.get().publishToUiThread(message);
         }

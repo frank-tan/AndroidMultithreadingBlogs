@@ -77,17 +77,17 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
 
     public void send3tasksToThreadPool(View view) {
         for(int i = 0; i < 3; i++) {
-            CustomRunnable runnable = new CustomRunnable();
-            runnable.setUiThreadCallback(this);
-            mCustomThreadPoolManager.addRunnable(runnable);
+            CustomCallable callable = new CustomCallable();
+            callable.setCustomThreadPoolManager(mCustomThreadPoolManager);
+            mCustomThreadPoolManager.addCallable(callable);
         }
     }
 
     public void send4TasksToThreadPool(View view) {
         for(int i = 0; i < 4; i++) {
-            CustomRunnable runnable = new CustomRunnable();
-            runnable.setUiThreadCallback(this);
-            mCustomThreadPoolManager.addRunnable(runnable);
+            CustomCallable callable = new CustomCallable();
+            callable.setCustomThreadPoolManager(mCustomThreadPoolManager);
+            mCustomThreadPoolManager.addCallable(callable);
         }
     }
 

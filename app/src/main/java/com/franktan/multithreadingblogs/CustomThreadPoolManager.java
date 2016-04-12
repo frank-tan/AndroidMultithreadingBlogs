@@ -1,11 +1,15 @@
 package com.franktan.multithreadingblogs;
 
+import android.os.Message;
 import android.os.Process;
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -24,6 +28,8 @@ public class CustomThreadPoolManager {
 
     private final ExecutorService mExecutorService;
     private final BlockingQueue<Runnable> mTaskQueue;
+
+    private WeakReference<UiThreadCallback> uiThreadCallbackWeakReference;
 
     // The class is used as a singleton
     static {
@@ -48,25 +54,29 @@ public class CustomThreadPoolManager {
         return sInstance;
     }
 
-    public void addRunnable(Runnable runnable){
-        mExecutorService.execute(runnable);
+    // Add a callable to the queue, which will be executed by available thread in the pool
+    public void addCallable(Callable callable){
+        Future future = mExecutorService.submit(callable);
     }
 
+    // TODO: 12/04/2016
     public void clearQueue() {
         mTaskQueue.clear();
     }
 
-    public void setUiThreadCallback(UiThreadCallback callback) {
-        Iterator iterator = mTaskQueue.iterator();
-        synchronized (this) {
-            while (iterator.hasNext()) {
-                CustomRunnable runnable = (CustomRunnable) iterator.next();
-                runnable.setUiThreadCallback(callback);
-            }
+    // Keep a weak reference to the UI thread, so we can send messages to the UI thread
+    public void setUiThreadCallback(UiThreadCallback uiThreadCallback) {
+        this.uiThreadCallbackWeakReference = new WeakReference<UiThreadCallback>(uiThreadCallback);
+    }
+
+    // Pass the message to the UI thread
+    public void passMessageToUiThread(Message message){
+        if(uiThreadCallbackWeakReference != null && uiThreadCallbackWeakReference.get() != null) {
+            uiThreadCallbackWeakReference.get().publishToUiThread(message);
         }
     }
 
-    /* A ThreadFactory implementation which create new thread for the thread pool.
+    /* A ThreadFactory implementation which create new threads for the thread pool.
        The threads created is set to background priority, so it does not compete with the UI thread.
      */
     private static class BackgroundThreadFactory implements ThreadFactory {

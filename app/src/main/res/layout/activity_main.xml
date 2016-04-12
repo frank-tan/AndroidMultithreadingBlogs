@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/send_msg_7"
             android:text="@string/msg_7_thread_pool"
-            android:onClick="clearQueueOfThreadPool"/>
+            android:onClick="cancelAllThreadPoolTasks"/>
 
         <Button
             android:layout_width="wrap_content"

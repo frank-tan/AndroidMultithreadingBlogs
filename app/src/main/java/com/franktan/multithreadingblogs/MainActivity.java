@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
         }
     }
 
-    public void clearQueueOfThreadPool(View view) {
-        mCustomThreadPoolManager.clearQueue();
+    public void cancelAllThreadPoolTasks(View view) {
+        mCustomThreadPoolManager.cancelAllTasks();
     }
 
     public void clearDisplay(View view) {

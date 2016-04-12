@@ -5,7 +5,9 @@ import android.os.Process;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +30,7 @@ public class CustomThreadPoolManager {
 
     private final ExecutorService mExecutorService;
     private final BlockingQueue<Runnable> mTaskQueue;
+    private List<Future> mRunningTaskList;
 
     private WeakReference<UiThreadCallback> uiThreadCallbackWeakReference;
 
@@ -41,6 +44,8 @@ public class CustomThreadPoolManager {
     private CustomThreadPoolManager() {
         // initialize a queue for the thread pool. New tasks will be added to this queue
         mTaskQueue = new LinkedBlockingQueue<Runnable>();
+
+        mRunningTaskList = new ArrayList<>();
 
         /*
             TODO: You can choose between a fixed sized thread pool and a dynamic pool
@@ -57,11 +62,18 @@ public class CustomThreadPoolManager {
     // Add a callable to the queue, which will be executed by available thread in the pool
     public void addCallable(Callable callable){
         Future future = mExecutorService.submit(callable);
+        mRunningTaskList.add(future);
     }
 
-    // TODO: 12/04/2016
-    public void clearQueue() {
+    // TODO: Test this
+    public void cancelAllTasks() {
         mTaskQueue.clear();
+        for (Future task : mRunningTaskList) {
+            if(task.isDone()){
+                task.cancel(true);
+            }
+        }
+        mRunningTaskList.clear();
     }
 
     // Keep a weak reference to the UI thread, so we can send messages to the UI thread

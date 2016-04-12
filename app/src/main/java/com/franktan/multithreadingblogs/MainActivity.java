@@ -61,16 +61,18 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
         }
     }
 
-    // onClick handler for SEND MESSAGE 1 button
+    // onClick handler for SEND Runnable button
     public void sendMsg1ToHandlerThread(View view){
-        // add a message to worker thread's message queue
-        mHandlerThread.addMessage(1);
+        // send a runnable to run on the HandlerThread
+        CustomRunnable runnable = new CustomRunnable();
+        runnable.setUiThreadCallback(this);
+        mHandlerThread.postRunnable(runnable);
     }
 
-    // onClick handler for SEND MESSAGE 2 button
+    // onClick handler for SEND MESSAGE button
     public void sendMsg2ToHandlerThread(View view){
         // add a message to worker thread's message queue
-        mHandlerThread.addMessage(2);
+        mHandlerThread.addMessage(1);
     }
 
     public void send3tasksToThreadPool(View view) {
@@ -99,10 +101,10 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
 
     // receive message from worker thread
     @Override
-    public void publishToUiThread(int message) {
+    public void publishToUiThread(Message message) {
         // add the message from worker thread to UI thread's message queue
         if(mUiHandler != null){
-            mUiHandler.sendEmptyMessage(message);
+            mUiHandler.sendMessage(message);
         }
     }
 
@@ -123,17 +125,12 @@ public class MainActivity extends AppCompatActivity implements UiThreadCallback 
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
+                // Our communication protocol for passing a string to the UI thread
                 case 1:
+                    Bundle bundle = msg.getData();
+                    String text = bundle.getString(Util.MESSAGE_TAG, Util.EMPTY_MESSAGE);
                     if(mWeakRefDisplay != null && mWeakRefDisplay.get() != null)
-                        mWeakRefDisplay.get().append(Util.getReadableTime()+"\tMessage1 processed on HandlerThread\n");
-                    break;
-                case 2:
-                    if(mWeakRefDisplay != null && mWeakRefDisplay.get() != null)
-                        mWeakRefDisplay.get().append(Util.getReadableTime()+"\tMessage2 processed on HandlerThread\n");
-                    break;
-                case 3:
-                    if(mWeakRefDisplay != null && mWeakRefDisplay.get() != null)
-                        mWeakRefDisplay.get().append(Util.getReadableTime()+"\tThread pool finished a task\n");
+                        mWeakRefDisplay.get().append(Util.getReadableTime() + text + "\n");
                     break;
                 default:
                     break;

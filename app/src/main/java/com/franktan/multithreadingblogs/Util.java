@@ -8,6 +8,8 @@ import java.util.Date;
  */
 public class Util {
     public static final String LOG_TAG = "BackgroundThread";
+    public static final String MESSAGE_TAG = "MESSAGE_TAG";
+    public static final String EMPTY_MESSAGE = "<EMPTY_MESSAGE>";
 
     public static String getReadableTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");

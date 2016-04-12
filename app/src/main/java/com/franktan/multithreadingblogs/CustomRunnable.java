@@ -7,23 +7,25 @@ import java.lang.ref.WeakReference;
 
 /**
  * Created by tan on 11/04/2016.
+ * CustomRunnable run some lengthy blocking code on a worker thread and notify UI thread when the
+ * work is done
  */
 public class CustomRunnable implements Runnable {
+    // Keep a weak reference to ui callback, so we can send a message to the UI thread
+    // Use weak reference to avoid leaking activity object
     private WeakReference<UiThreadCallback> uiThreadCallbackWeakReference;
 
     @Override
     public void run() {
         try {
-            if (Thread.interrupted()) throw new InterruptedException();
-            Thread.sleep(1000);
-            if (Thread.interrupted()) throw new InterruptedException();
-            Thread.sleep(1000);
-            if (Thread.interrupted()) throw new InterruptedException();
-            Thread.sleep(1000);
-            if (Thread.interrupted()) throw new InterruptedException();
-            Thread.sleep(1000);
+            // Before running some lengthy and blocking work, check if the thread has been interrupted
             if (Thread.interrupted()) throw new InterruptedException();
 
+            // In real world project, you might do some blocking IO operation
+            // In this example, I just let the thread sleep for 3 second
+            Thread.sleep(3000);
+
+            // After work is finished, send a message to UI thread
             if(uiThreadCallbackWeakReference != null && uiThreadCallbackWeakReference.get() != null) {
                 Bundle bundle = new Bundle();
                 bundle.putString(Util.MESSAGE_TAG, "Thread " + String.valueOf(Thread.currentThread().getId()) + " completed");

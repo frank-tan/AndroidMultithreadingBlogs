@@ -1,6 +1,5 @@
 package com.franktan.multithreadingblogs;
 
-import android.os.Bundle;
 import android.os.Message;
 
 import java.lang.ref.WeakReference;
@@ -29,14 +28,12 @@ public class CustomCallable implements Callable {
             // After work is finished, send a message to CustomThreadPoolManager
             if(mCustomThreadPoolManagerWeakReference != null
                     && mCustomThreadPoolManagerWeakReference.get() != null) {
-                Bundle bundle = new Bundle();
-                bundle.putString(Util.MESSAGE_TAG, "Thread " +
+
+                Message message = Util.createMessage(1, "Thread " +
                         String.valueOf(Thread.currentThread().getId()) + " " +
                         String.valueOf(Thread.currentThread().getName()) + " completed");
-                Message message = new Message();
-                message.what = 1;
-                message.setData(bundle);
-                mCustomThreadPoolManagerWeakReference.get().passMessageToUiThread(message);
+
+                mCustomThreadPoolManagerWeakReference.get().sendMessageToUiThread(message);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

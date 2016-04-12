@@ -63,7 +63,7 @@ public class CustomHandlerThread extends HandlerThread {
                         Thread.sleep(1000);
                         if(!Thread.interrupted() && mUiThreadCallback != null && mUiThreadCallback.get() != null){
                             Bundle bundle = new Bundle();
-                            bundle.putString(Util.MESSAGE_TAG, "Thread " + String.valueOf(Thread.currentThread().getId()) + " completed");
+                            bundle.putString(Util.MESSAGE_BODY, "Thread " + String.valueOf(Thread.currentThread().getId()) + " completed");
                             Message message = new Message();
                             message.what = 1;
                             message.setData(bundle);

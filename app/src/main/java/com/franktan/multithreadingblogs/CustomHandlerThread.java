@@ -1,9 +1,11 @@
 package com.franktan.multithreadingblogs;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
@@ -34,6 +36,12 @@ public class CustomHandlerThread extends HandlerThread {
         }
     }
 
+    public void postRunnable(Runnable runnable){
+        if(mHandler != null) {
+            mHandler.post(runnable);
+        }
+    }
+
     // The UiThreadCallback is used to send message to UI thread
     public void setUiThreadCallback(UiThreadCallback callback){
         this.mUiThreadCallback = new WeakReference<UiThreadCallback>(callback);
@@ -45,6 +53,7 @@ public class CustomHandlerThread extends HandlerThread {
             super(looper);
         }
 
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -52,17 +61,16 @@ public class CustomHandlerThread extends HandlerThread {
                 case 1:
                     try {
                         Thread.sleep(1000);
-                    } catch (InterruptedException e){}
-                    if(mUiThreadCallback != null && mUiThreadCallback.get() != null){
-                        mUiThreadCallback.get().publishToUiThread(1);
-                    }
-                    break;
-                case 2:
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e){}
-                    if(mUiThreadCallback != null && mUiThreadCallback.get() != null){
-                        mUiThreadCallback.get().publishToUiThread(2);
+                        if(!Thread.interrupted() && mUiThreadCallback != null && mUiThreadCallback.get() != null){
+                            Bundle bundle = new Bundle();
+                            bundle.putString(Util.MESSAGE_TAG, "Thread " + String.valueOf(Thread.currentThread().getId()) + " completed");
+                            Message message = new Message();
+                            message.what = 1;
+                            message.setData(bundle);
+                            mUiThreadCallback.get().publishToUiThread(message);
+                        }
+                    } catch (InterruptedException e){
+                        Log.e(Util.LOG_TAG,"HandlerThread interrupted");
                     }
                     break;
                 default:

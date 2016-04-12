@@ -65,15 +65,20 @@ public class CustomThreadPoolManager {
         mRunningTaskList.add(future);
     }
 
-    // TODO: Test this
+    /* Remove all tasks in the queue and stop all running threads
+     * Notify UI thread about the cancellation
+     */
     public void cancelAllTasks() {
-        mTaskQueue.clear();
-        for (Future task : mRunningTaskList) {
-            if(task.isDone()){
-                task.cancel(true);
+        synchronized (this) {
+            mTaskQueue.clear();
+            for (Future task : mRunningTaskList) {
+                if (!task.isDone()) {
+                    task.cancel(true);
+                }
             }
+            mRunningTaskList.clear();
         }
-        mRunningTaskList.clear();
+        sendMessageToUiThread(Util.createMessage(1, "All tasks in the thread pool are cancelled"));
     }
 
     // Keep a weak reference to the UI thread, so we can send messages to the UI thread

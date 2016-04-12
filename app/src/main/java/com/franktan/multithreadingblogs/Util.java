@@ -7,10 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by tan on 10/04/2016.
+ * Created by Frank Tan on 10/04/2016.
+ *
+ * A helper class with static properties and methods
  */
 public class Util {
     public static final String LOG_TAG = "BackgroundThread";
+    public static final int MESSAGE_ID = 1;
     public static final String MESSAGE_BODY = "MESSAGE_BODY";
     public static final String EMPTY_MESSAGE = "<EMPTY_MESSAGE>";
 

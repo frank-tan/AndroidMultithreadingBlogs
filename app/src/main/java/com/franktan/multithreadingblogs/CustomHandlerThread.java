@@ -1,6 +1,5 @@
 package com.franktan.multithreadingblogs;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -11,6 +10,7 @@ import java.lang.ref.WeakReference;
 
 /**
  * Created by Frank Tan on 3/04/2016.
+ * Our custom class extending HandlerThread
  */
 public class CustomHandlerThread extends HandlerThread {
 
@@ -29,13 +29,14 @@ public class CustomHandlerThread extends HandlerThread {
         mHandler = new CustomHandler(getLooper());
     }
 
-    // Used by UI thread to send message to worker thread's message queue
+    // Used by UI thread to send a message to the worker thread's message queue
     public void addMessage(int message){
         if(mHandler != null) {
             mHandler.sendEmptyMessage(message);
         }
     }
 
+    // Used by UI thread to send a runnable to the worker thread's message queue
     public void postRunnable(Runnable runnable){
         if(mHandler != null) {
             mHandler.post(runnable);
@@ -62,11 +63,7 @@ public class CustomHandlerThread extends HandlerThread {
                     try {
                         Thread.sleep(1000);
                         if(!Thread.interrupted() && mUiThreadCallback != null && mUiThreadCallback.get() != null){
-                            Bundle bundle = new Bundle();
-                            bundle.putString(Util.MESSAGE_BODY, "Thread " + String.valueOf(Thread.currentThread().getId()) + " completed");
-                            Message message = new Message();
-                            message.what = 1;
-                            message.setData(bundle);
+                            Message message = Util.createMessage(Util.MESSAGE_ID, "Thread " + String.valueOf(Thread.currentThread().getId()) + " completed");
                             mUiThreadCallback.get().publishToUiThread(message);
                         }
                     } catch (InterruptedException e){

@@ -7,6 +7,8 @@ import java.util.concurrent.Callable;
 
 /**
  * Created by frank.yitan on 12/04/2016.
+ * CustomCallable is used for sending tasks to the thread pool. When a callable is submitted,
+ * a Future object is returned, allowing the thread pool manager to stop the task.
  */
 public class CustomCallable implements Callable {
 
@@ -26,12 +28,12 @@ public class CustomCallable implements Callable {
             Thread.sleep(3000);
 
             // After work is finished, send a message to CustomThreadPoolManager
+            Message message = Util.createMessage(Util.MESSAGE_ID, "Thread " +
+                    String.valueOf(Thread.currentThread().getId()) + " " +
+                    String.valueOf(Thread.currentThread().getName()) + " completed");
+
             if(mCustomThreadPoolManagerWeakReference != null
                     && mCustomThreadPoolManagerWeakReference.get() != null) {
-
-                Message message = Util.createMessage(1, "Thread " +
-                        String.valueOf(Thread.currentThread().getId()) + " " +
-                        String.valueOf(Thread.currentThread().getName()) + " completed");
 
                 mCustomThreadPoolManagerWeakReference.get().sendMessageToUiThread(message);
             }

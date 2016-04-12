@@ -20,14 +20,15 @@ public class CustomRunnable implements Runnable {
             // Before running some lengthy and blocking work, check if the thread has been interrupted
             if (Thread.interrupted()) throw new InterruptedException();
 
-            // In real world project, you might do some blocking IO operation
+            // In real world app, you might do some blocking IO operation
             // In this example, I just let the thread sleep for 3 second
             Thread.sleep(3000);
 
             // After work is finished, send a message to UI thread
+            Message message = Util.createMessage(Util.MESSAGE_ID,
+                    "Thread " + String.valueOf(Thread.currentThread().getId()) + " completed");
+
             if(uiThreadCallbackWeakReference != null && uiThreadCallbackWeakReference.get() != null) {
-                Message message = Util.createMessage(1,
-                        "Thread " + String.valueOf(Thread.currentThread().getId()) + " completed");
                 uiThreadCallbackWeakReference.get().publishToUiThread(message);
             }
         } catch (InterruptedException e) {
